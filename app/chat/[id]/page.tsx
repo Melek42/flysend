@@ -274,7 +274,7 @@ export default function ChatPage() {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {Object.entries(groupedMessages).map(([date, dateMessages]) => (
+                                {Object.entries(groupedMessages).map(([date, dateMessages]: [string, any[]]) => (
                                     <div key={date}>
                                         {/* Date Separator */}
                                         <div className="flex items-center justify-center my-6">
