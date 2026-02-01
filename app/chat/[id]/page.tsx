@@ -104,7 +104,7 @@ export default function ChatPage() {
             // Load initial messages
             const messagesResult = await getMatchMessages(matchId);
             if (messagesResult.success) {
-                setMessages(messagesResult.messages);
+                setMessages(messagesResult.messages || []);
             }
         } catch (error) {
             console.error('Error loading chat:', error);
