@@ -274,73 +274,83 @@ export default function ChatPage() {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {Object.entries(groupedMessages).map(([date, dateMessages]: [string, any[]]) => (
-                                    <div key={date}>
-                                        {/* Date Separator */}
-                                        <div className="flex items-center justify-center my-6">
-                                            <div className="bg-gray-100 px-4 py-1 rounded-full text-sm text-gray-600">
-                                                {formatDateHeader(date)}
-                                            </div>
+
+
+{Object.entries(groupedMessages).map(([date, dateMessages]) => {
+    // Type assertion for dateMessages
+    const messagesArray = dateMessages as any[];
+    
+    return (
+        <div key={date}>
+            {/* Date Separator */}
+            <div className="flex items-center justify-center my-6">
+                <div className="bg-gray-100 px-4 py-1 rounded-full text-sm text-gray-600">
+                    {formatDateHeader(date)}
+                </div>
+            </div>
+
+            {/* Messages for this date */}
+            <div className="space-y-4">
+                {messagesArray.map((message, index) => {
+                    const isOwn = message.senderId === user?.uid;
+                    const showAvatar = index === 0 ||
+                        messagesArray[index - 1]?.senderId !== message.senderId;
+
+                    return (
+                        <div
+                            key={message.id}
+                            className={`flex ${isOwn ? 'justify-end' : 'justify-start'} ${showAvatar ? 'mt-4' : 'mt-1'}`}
+                        >
+                            <div className={`max-w-[70%] ${isOwn ? 'order-2' : 'order-1'}`}>
+                                {!isOwn && showAvatar && (
+                                    <div className="flex items-end space-x-2 mb-1">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center text-sm font-medium text-blue-600">
+                                            {otherUser?.fullName?.charAt(0) || 'U'}
                                         </div>
-
-                                        {/* Messages for this date */}
-                                        <div className="space-y-4">
-                                            {dateMessages.map((message, index) => {
-                                                const isOwn = message.senderId === user?.uid;
-                                                const showAvatar = index === 0 ||
-                                                    dateMessages[index - 1]?.senderId !== message.senderId;
-
-                                                return (
-                                                    <div
-                                                        key={message.id}
-                                                        className={`flex ${isOwn ? 'justify-end' : 'justify-start'} ${showAvatar ? 'mt-4' : 'mt-1'}`}
-                                                    >
-                                                        <div className={`max-w-[70%] ${isOwn ? 'order-2' : 'order-1'}`}>
-                                                            {!isOwn && showAvatar && (
-                                                                <div className="flex items-end space-x-2 mb-1">
-                                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center text-sm font-medium text-blue-600">
-                                                                        {otherUser?.fullName?.charAt(0) || 'U'}
-                                                                    </div>
-                                                                    <span className="text-sm text-gray-600">{otherUser?.fullName || 'User'}</span>
-                                                                </div>
-                                                            )}
-
-                                                            <div className={`relative ${isOwn ? 'mr-2' : 'ml-10'}`}>
-                                                                <div
-                                                                    className={`px-4 py-3 rounded-2xl ${isOwn
-                                                                            ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none'
-                                                                            : 'bg-gray-100 text-gray-800 rounded-bl-none'
-                                                                        }`}
-                                                                >
-                                                                    <p className="whitespace-pre-wrap break-words">{message.content}</p>
-                                                                </div>
-                                                                <div
-                                                                    className={`text-xs mt-1 ${isOwn ? 'text-right text-gray-500' : 'text-gray-400'
-                                                                        }`}
-                                                                >
-                                                                    {formatMessageTime(message.createdAt)}
-                                                                    {isOwn && (
-                                                                        <span className="ml-2">
-                                                                            {message.read ? '✅ Read' : '✓ Sent'}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        {isOwn && showAvatar && (
-                                                            <div className="order-1 mr-2">
-                                                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center text-sm font-medium text-green-600">
-                                                                    {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'Y'}
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
+                                        <span className="text-sm text-gray-600">{otherUser?.fullName || 'User'}</span>
                                     </div>
-                                ))}
+                                )}
+
+                                <div className={`relative ${isOwn ? 'mr-2' : 'ml-10'}`}>
+                                    <div
+                                        className={`px-4 py-3 rounded-2xl ${isOwn
+                                                ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none'
+                                                : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                                            }`}
+                                    >
+                                        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                                    </div>
+                                    <div
+                                        className={`text-xs mt-1 ${isOwn ? 'text-right text-gray-500' : 'text-gray-400'
+                                            }`}
+                                    >
+                                        {formatMessageTime(message.createdAt)}
+                                        {isOwn && (
+                                            <span className="ml-2">
+                                                {message.read ? '✅ Read' : '✓ Sent'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {isOwn && showAvatar && (
+                                <div className="order-1 mr-2">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center text-sm font-medium text-green-600">
+                                        {user?.displayName?.charAt(0) || user?.email?.charAt(0) || 'Y'}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+})}
+
+
+                                
                                 <div ref={messagesEndRef} />
                             </div>
                         )}
