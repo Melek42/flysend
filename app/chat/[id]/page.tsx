@@ -129,8 +129,15 @@ export default function ChatPage() {
         if (otherUserId) {
             const result = await sendMessage(matchId, user.uid, otherUserId, newMessage.trim());
 
-            if (result.success) {
-                setNewMessage('');
+            if (result.success && result.listing) {
+                // Check if this listing belongs to the current user
+                if (result.listing.userId !== userId) {
+                    router.push('/dashboard/listings');
+                    return;
+                }
+            } else {
+                router.push('/dashboard/listings');
+                return;
             }
         }
 
