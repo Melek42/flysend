@@ -175,14 +175,19 @@ export default function ChatPage() {
     };
 
     // Group messages by date
-    const groupedMessages = messages.reduce((groups, message) => {
-        const date = new Date(message.createdAt).toDateString();
-        if (!groups[date]) {
-            groups[date] = [];
-        }
-        groups[date].push(message);
-        return groups;
-    }, {} as Record<string, any[]>);
+    const groupedMessages: Record<string, any[]> = messages.reduce(
+        (groups: Record<string, any[]>, message: any) => {
+            const date = new Date(message.createdAt).toDateString();
+            if (!groups[date]) {
+                groups[date] = [];
+            }
+            groups[date].push(message);
+            return groups;
+        },
+        {}
+    );
+
+    
 
     if (loading) {
         return (
