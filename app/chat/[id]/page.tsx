@@ -53,7 +53,7 @@ export default function ChatPage() {
 
             // Set up real-time listener for messages
             const unsubscribe = subscribeToMatchMessages(matchId, (newMessages) => {
-                setMessages(newMessages);
+                setMessages(newMessages ?? []);
                 scrollToBottom();
 
                 // Mark new messages as read
@@ -104,8 +104,9 @@ export default function ChatPage() {
             // Load initial messages
             const messagesResult = await getMatchMessages(matchId);
             if (messagesResult.success) {
-                setMessages(messagesResult.messages);
+                setMessages(messagesResult.messages ?? []);
             }
+
         } catch (error) {
             console.error('Error loading chat:', error);
         }
