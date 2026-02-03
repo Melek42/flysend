@@ -94,7 +94,6 @@ export default function EditListingPage() {
             // Populate form with listing data
             const listing = result.listing;
             setFormData({
-                title: listing.title || '',
                 description: listing.description || '',
                 origin: listing.origin || '',
                 destination: listing.destination || '',
