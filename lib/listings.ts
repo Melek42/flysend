@@ -154,24 +154,41 @@ export async function getUserListings(userId: string) {
     }
 }
 
-// Get single listing
-export async function getListing(listingId: string) {
-    try {
-        const listingDoc = await getDoc(doc(db, 'listings', listingId));
-
-        if (!listingDoc.exists()) {
-            return { success: false, error: 'Listing not found' };
-        }
-
-        return {
-            success: true,
-            listing: { id: listingDoc.id, ...listingDoc.data() }
-        };
-    } catch (error) {
-        console.error('Error fetching listing:', error);
-        return { success: false, error: error.message };
-    }
-}
+            // Get single listing
+            // lib/listings.ts - Make sure getListing returns proper types
+            export async function getListing(listingId: string) {
+                try {
+                    const docRef = doc(db, 'listings', listingId);
+                    const docSnap = await getDoc(docRef);
+                    
+                    if (!docSnap.exists()) {
+                        return {
+                            success: false,
+                            error: 'Listing not found'
+                        };
+                    }
+            
+                    const data = docSnap.data();
+                    return {
+                        success: true,
+                        listing: {
+                            id: docSnap.id,
+                            ...data,
+                            // Convert timestamps if needed
+                            createdAt: data.createdAt?.toDate?.() || data.createdAt,
+                            neededByDate: data.neededByDate?.toDate?.() || data.neededByDate,
+                            departureDate: data.departureDate?.toDate?.() || data.departureDate,
+                        }
+                    };
+                    
+                } catch (error) {
+                    console.error('Error getting listing:', error);
+                    return {
+                        success: false,
+                        error: error instanceof Error ? error.message : 'Unknown error'
+                    };
+                }
+            }
 
 // Update listing
 export async function updateListing(listingId: string, updates: Partial<BaseListing>) {
