@@ -81,8 +81,12 @@ export default function EditListingPage() {
             }
 
             // Check if this listing belongs to the current user
-            if (result.listing.userId !== userId) {
-                setError('You do not have permission to edit this listing.');
+            if (!result.listing || !('userId' in result.listing)) {
+                router.push('/dashboard/listings');
+                return;
+            }
+            
+            if ((result.listing as any).userId !== userId) {
                 router.push('/dashboard/listings');
                 return;
             }
